@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 
 const UserRepository = require('../repositories/user-repository');
 const { JWT_KEY } = require('../config/serverConfig');
+const { response } = require('express');
 
 class UserService {
 
@@ -37,9 +38,27 @@ class UserService {
             // step 3-> if passwords match then create a token and send it to the user 
             const newJWT = this.createToken({email: user.email, id:user.id});
             return newJWT;
-            
+
         } catch (error) {
             console.log("Somethong went wrong in the sign in process");
+            throw error;
+        }
+    }
+
+    async isAuthenticated(token) {
+        try {
+            const isTokenVerified = this.verifyToken(token);
+            if(!isTokenVerified) {
+                throw {error: 'Invalid Token'}
+            }
+            const user = await this.userRepository.getById(response.id);
+            if(!user) {
+                throw {error: 'No user with the corresponding token exists'};
+            }
+            return user.id;
+
+        } catch (error) {
+            console.log('Something went wrong in the auth process.');
             throw error;
         }
     }
