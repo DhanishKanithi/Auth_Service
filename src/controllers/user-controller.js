@@ -17,11 +17,11 @@ const create = async(req, res) => {
     }
     catch(error) {
         console.log(error);
-        return res.status(500).json({
-            message : 'Something went wrong',
+        return res.status(error.statusCode).json({
+            message : error.message,
             data: {},
             success: false,
-            err: error
+            err: error.explanation
         })
     }
 }
@@ -81,7 +81,7 @@ const isAdmin = async(req,res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
+        return res.status(200).json({
             message : 'Something went wrong',
             data: {},
             success: false,
