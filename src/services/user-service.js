@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const UserRepository = require('../repositories/user-repository');
 const { JWT_KEY } = require('../config/serverConfig');
-const { response } = require('express');
+
 const AppErrors = require('../utils/error-handler');
 
 class UserService {
@@ -58,7 +58,7 @@ class UserService {
             if(!isTokenVerified) {
                 throw {error: 'Invalid Token'}
             }
-            const user = await this.userRepository.getById(response.id);
+            const user = await this.userRepository.getById(isTokenVerified.id);
             if(!user) {
                 throw {error: 'No user with the corresponding token exists'};
             }
